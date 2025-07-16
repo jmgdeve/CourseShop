@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\CourseController;
 
 
-//RUTAS DE WEB
+
 Route::get('/', function () {
     return view('welcome');
 });

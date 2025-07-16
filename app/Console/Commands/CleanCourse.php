@@ -29,7 +29,7 @@ class CleanCourse extends Command
     {
         //
 
-        $delete = \App\Models\Course::where('created_at', '<', now()->subDays(30))->delete();
+        $delete = \App\Models\Course::where('created_at', '<', now()->subDays(365))->delete();
         if ($delete) {
             $this->info('Cursos antiguos eliminados exitosamente.');
         } else {

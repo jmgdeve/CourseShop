@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import api from '../../api';
+import { useUser } from '../UserContext';
 
 
 export default function LoginForm({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
+  // Acceso al contexto de usuario para actualizar el estado del usuario después del login
+  const { setUser } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +25,11 @@ export default function LoginForm({ onLogin }) {
       const token = response.data.token;
       localStorage.setItem('auth_token', token);
 
-      
+
+      // Actualizar el usuario en el contexto por si cierra y abre sesión un user diferente
+      const userRes = await api.get('/user');
+      setUser(userRes.data);
+        
       if (onLogin) onLogin(token);
 
     } catch (err) {

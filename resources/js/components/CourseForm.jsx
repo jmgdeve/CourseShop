@@ -1,26 +1,34 @@
+//formulario de creacion y actualizacion de cursos
+
 import { useState } from 'react';
 import api from '../../api';
 
 
-export default function CourseForm({ onSuccess }) {
+export default function CourseForm({ onSuccess, initialData = {}, onSubmit }) {
   const [form, setForm] = useState({
-    title: '',
-    description: '',
+    title: initialData.title || "",
+    description: initialData.description || "",
   });
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+  //prevenir recargar la página
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
     try {
-      await api.post('/courses', form);
-      if (onSuccess) onSuccess(); // para redirigir o refrescar
+      if (onSubmit) {
+        await onSubmit(form); // funcion para actualizar el curso
+
+      } else {
+        await api.post('/courses', form);
+      }
+      if (onSuccess) onSuccess(); // para redirigir en caso de éxito (prop del componente padre CoursePage)
     } catch (err) {
+      console.log(err);
       const msg = err.response?.data?.message || 'Error al crear el curso';
       setError(msg);
     }
